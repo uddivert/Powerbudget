@@ -45,7 +45,16 @@ def convertItoA(arg):
 	arg = (float(arg)/3600)*getInterval()
 	return float(arg)
 
-def ReadCsv():
+def calculateComps(curLineMode, interval):
+	total = 0
+	componentDraws = []
+	componentDraws.append(Component1.getPower(curLineMode, interval))
+	componentDraws.append(Component2.getPower(curLineMode, interval))
+	for x in range(len(componentDraws)):
+		total += componentDraws[x]
+	return total, componentDraws
+
+def GenCsv():
 	#opens the timeline csv and scrapes the info from each line
 	with open("powertestdata.csv") as f:
 		totalPower = 0
@@ -57,14 +66,12 @@ def ReadCsv():
 		nextLineTime, nextLinePowGain, nextLineSol, nextLineMode = scrapeInfo(nextLine)
 
 		g = open("engineOutput.csv", "w+")
-		g.write("Time,Submode,Power Generated (W),Power Consumed (W),Battery Level(W)\n")
+		g.write("Time,Submode,Power Generated (W),Power Consumed (W),Battery Level(W),,Component1 consumption,Component2 consumption\n")
 
 		while nextLineTime != '':
 			#plugs in the submode info to each component (line#Info[-1])
-			powConsp1 = Component1.getPower(curLineMode, interval)
-			powConsp2 = Component2.getPower(curLineMode, interval)
+			powConsumed, componentDraws = calculateComps(curLineMode, interval)
 			#converts the instatanious data to actual data, i.e. Watt/hrs to Watts
-			powConsumed = powConsp1 + powConsp2
 			actualPowGain = convertItoA(curLinePowGain)
 			totalPower += (actualPowGain - powConsumed)
 
@@ -73,12 +80,15 @@ def ReadCsv():
 			nextLineTime, nextLinePowGain, nextLineSol, nextLineMode = scrapeInfo(f.readline())
 
 			#writeToOut(g, curLineTime, curLineMode, totalPower)
-			g.write(str(curLineTime) + "," + str(curLineMode) + "," + str(actualPowGain) + "," + str(powConsumed) + "," + str(totalPower) + "\n")
+			g.write(str(curLineTime) + "," + str(curLineMode) + "," + str(actualPowGain) + "," + str(powConsumed) + "," + str(totalPower) + ",")
+			for x in range(len(componentDraws)):
+				g.write("," + str(componentDraws[x]))
+			g.write("\n")
 
 		g.close()
 
 if __name__ == "__main__":
-	ReadCsv()
+	GenCsv()
 
 
 
