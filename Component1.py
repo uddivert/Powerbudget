@@ -1,17 +1,22 @@
 import numpy as np
-from scipy.integrate import simps
+from scipy.integrate import quad
 from numpy import trapz
+from math import *
 
+#defines the mathematical functions associated with each power state
+def C1PState1(x):
+	y = cos(x)/2
+	return y
+
+def C1PState2(x):
+	y = 2*sin(x)
+	return y
+
+#calls the appropriate power state given the submode
 def getPower(mode, interval):
 	if mode == "Cruise - Idle":
-		return C1PS1(interval)
+		return quad(C1PState1, 0, interval)[1]
 	elif mode == "Scan - Point Prep":
-		return C1PS2(interval)
-
-def C1PS1(x):
-	y = np.sin(x)/x
-	return y
-
-def C1PS2(x):
-	y = np.cos(x)/x
-	return y
+		return quad(C1PState2, 0, interval)[1]
+	else:
+		return 0
