@@ -3,7 +3,7 @@ import Component1
 import Component2
 
 test = True
-interval = 0
+interval = 30
 
 def getInterval():
 	'''defunct-----------------
@@ -17,7 +17,6 @@ def getInterval():
 	(endTimes[1] - startTimes[1]) * 60 + (endTimes[2] - startTimes[2])
 	print(startTimes[0])-------------'''
 	#just define the interval time IN SECONDS here
-	interval = 30
 	return interval
 
 def scrapeInfo(line):
@@ -27,7 +26,7 @@ def scrapeInfo(line):
 
 	#this if will only occur at the end of the file and helps exit cleanly
 	if lineInfo[0] == '':
-		return lineInfo[0], lineInfo[1], lineInfo[2], lineInfo[3]
+		return lineInfo[0], 0, 0, 0
 	return lineInfo[0], float(lineInfo[1]), float(lineInfo[2]), lineInfo[3]
 
 def cleanHeader(f):
@@ -36,6 +35,9 @@ def cleanHeader(f):
 
 	while "Current Submode" not in line1:
 		line1 = f.readline()
+		if line1 == '':
+			print("please make sure your .csv file is formatted properly, you may be missig a header")
+			sys.exit(1)
 
 	line1 = f.readline()
 	line2 = f.readline()
@@ -45,6 +47,8 @@ def convertItoA(arg):
 	arg = (float(arg)/3600)*getInterval()
 	return float(arg)
 
+#this function is essentail, it plugs in the interval and submode into each of the component files
+#and compiles them into an array and also sums them for a total power consumption
 def calculateComps(curLineMode, interval):
 	total = 0
 	componentDraws = []
@@ -55,22 +59,27 @@ def calculateComps(curLineMode, interval):
 	return total, componentDraws
 
 def GenCsv():
-	#opens the timeline csv and scrapes the info from each line
+	totalPower = 38
+	valid = True
+
+	#opens the timeline csv and scrapes the info from each line, processes, and writes to output.csv
 	with open("powertestdata.csv") as f:
-		totalPower = 0
 		curLine, nextLine, f = cleanHeader(f)
 		interval = getInterval()
-
+		
 		#sperating the elements(cloumns of the STK.csv) This is done for readability
 		curLineTime, curLinePowGain, curLineSol, curLineMode = scrapeInfo(curLine)
 		nextLineTime, nextLinePowGain, nextLineSol, nextLineMode = scrapeInfo(nextLine)
 
+		#opening the csv and adding the headers
 		g = open("engineOutput.csv", "w+")
 		g.write("Time,Submode,Power Generated (W),Power Consumed (W),Battery Level(W),,Component1 consumption,Component2 consumption\n")
 
 		while nextLineTime != '':
+
 			#plugs in the submode info to each component (line#Info[-1])
 			powConsumed, componentDraws = calculateComps(curLineMode, interval)
+
 			#converts the instatanious data to actual data, i.e. Watt/hrs to Watts
 			actualPowGain = convertItoA(curLinePowGain)
 			totalPower += (actualPowGain - powConsumed)
@@ -79,12 +88,25 @@ def GenCsv():
 			curLineTime, curLinePowGain, curLineSol, curLineMode = nextLineTime, nextLinePowGain, nextLineSol, nextLineMode
 			nextLineTime, nextLinePowGain, nextLineSol, nextLineMode = scrapeInfo(f.readline())
 
-			#writeToOut(g, curLineTime, curLineMode, totalPower)
+			#leveling the battery power if the gain is over capacity
+			if totalPower > 38:
+				totalPower = 38
+				print("The power exceeded battery capacity and was leveled at time " + str(curLineTime))
+
+			#writing all the info the the output.csv
 			g.write(str(curLineTime) + "," + str(curLineMode) + "," + str(actualPowGain) + "," + str(powConsumed) + "," + str(totalPower) + ",")
 			for x in range(len(componentDraws)):
 				g.write("," + str(componentDraws[x]))
 			g.write("\n")
 
+			#if the power drops dangerously low, did not stop program altogether because I figure more into is always better
+			if totalPower < 5:
+				print("Power below 5W at " + str(curLineTime))
+				valid = False
+
+		#if the battery power never dropped too low
+		if valid == True:
+			print("This timeline has passed!")
 		g.close()
 
 if __name__ == "__main__":
