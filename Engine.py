@@ -58,7 +58,7 @@ def convertItoA(arg):
 	arg = (float(arg)/3600)*getInterval()
 	return float(arg)
 '''this function is essentail, it plugs in the interval and submode into each of the component files
-and compiles them into an array and also sums them for a total power consumption. It is intentianally
+and compiles them into an array and also sums them for a total power consumption. It is intentionally
 verbose so it is easy to see if all the components are being called and returning info''' 
 def calculateComps(curLineMode, interval):
 	total = 0
