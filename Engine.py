@@ -1,6 +1,17 @@
 from itertools import *
-import Component1
-import Component2
+from lib import MAIADCS
+from lib import ClydeOBC
+from lib import ClydeSBandAntenna
+from lib import ClydeSunSensors
+from lib import FsatiUHFTransiever
+from lib import GomSpaceBP4
+from lib import IDS
+from lib import ISISUHFAntenna
+from lib import P60PDU
+from lib import P60AC
+from lib import SolarPanels
+from lib import Tx2i
+#I know this looks ridiculous but the * would not work
 
 test = True
 interval = 30
@@ -13,7 +24,7 @@ def getInterval():
 	for x, y in izip(startTimes, endTimes):
 		x = float(x)
 		y = float(y)
-
+ 
 	(endTimes[1] - startTimes[1]) * 60 + (endTimes[2] - startTimes[2])
 	print(startTimes[0])-------------'''
 	#just define the interval time IN SECONDS here
@@ -36,7 +47,7 @@ def cleanHeader(f):
 	while "Current Submode" not in line1:
 		line1 = f.readline()
 		if line1 == '':
-			print("please make sure your .csv file is formatted properly, you may be missig a header")
+			print("please make sure your .csv file is formatted properly, you may be missing a header")
 			sys.exit(1)
 
 	line1 = f.readline()
@@ -46,14 +57,24 @@ def cleanHeader(f):
 def convertItoA(arg):
 	arg = (float(arg)/3600)*getInterval()
 	return float(arg)
-
-#this function is essentail, it plugs in the interval and submode into each of the component files
-#and compiles them into an array and also sums them for a total power consumption
+'''this function is essentail, it plugs in the interval and submode into each of the component files
+and compiles them into an array and also sums them for a total power consumption. It is intentianally
+verbose so it is easy to see if all the components are being called and returning info''' 
 def calculateComps(curLineMode, interval):
 	total = 0
 	componentDraws = []
-	componentDraws.append(Component1.getPower(curLineMode, interval))
-	componentDraws.append(Component2.getPower(curLineMode, interval))
+	componentDraws.append(MAIADCS.getPower(curLineMode, interval))
+	componentDraws.append(ClydeOBC.getPower(curLineMode, interval))	
+	componentDraws.append(ClydeSBandAntenna.getPower(curLineMode, interval))
+	componentDraws.append(ClydeSunSensors.getPower(curLineMode, interval))
+	componentDraws.append(FsatiUHFTransiever.getPower(curLineMode, interval))
+	componentDraws.append(GomSpaceBP4.getPower(curLineMode, interval))
+	componentDraws.append(IDS.getPower(curLineMode, interval))
+	componentDraws.append(ISISUHFAntenna.getPower(curLineMode, interval))
+	componentDraws.append(P60PDU.getPower(curLineMode, interval))
+	componentDraws.append(P60AC.getPower(curLineMode, interval))
+	componentDraws.append(SolarPanels.getPower(curLineMode, interval))
+	componentDraws.append(Tx2i.getPower(curLineMode, interval))
 	for x in range(len(componentDraws)):
 		total += componentDraws[x]
 	return total, componentDraws
@@ -63,7 +84,7 @@ def GenCsv():
 	valid = True
 
 	#opens the timeline csv and scrapes the info from each line, processes, and writes to output.csv
-	with open("powertestdata.csv") as f:
+	with open("./Inputs/powertestdata.csv") as f:
 		curLine, nextLine, f = cleanHeader(f)
 		interval = getInterval()
 		
@@ -73,7 +94,8 @@ def GenCsv():
 
 		#opening the csv and adding the headers
 		g = open("engineOutput.csv", "w+")
-		g.write("Time,Submode,Power Generated (W),Power Consumed (W),Battery Level(W),,Component1 consumption,Component2 consumption\n")
+		g.write("Time,Submode,Power Generated (W),Power Consumed (W),Battery Level(W),,MAIADCS consumption,ClydeOBC consumption,ClydeSBandAntenna,"+
+			"ClydeSunSensors,FsatiUHFTransiever,GomSpaceBP4,IDS,ISISUHFAntenna,P60PDU,P60AC,SolarPanels,Tx2i\n")
 
 		while nextLineTime != '':
 
@@ -99,7 +121,7 @@ def GenCsv():
 				g.write("," + str(componentDraws[x]))
 			g.write("\n")
 
-			#if the power drops dangerously low, did not stop program altogether because I figure more into is always better
+			#if the power drops dangerously low, did not stop program altogether because I figure more info is always better
 			if totalPower < 5:
 				print("Power below 5W at " + str(curLineTime))
 				valid = False
