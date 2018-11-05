@@ -77,6 +77,8 @@ def calculateComps(curLineMode, interval):
 	componentDraws.append(Tx2i.getPower(curLineMode, interval))
 	for x in range(len(componentDraws)):
 		total += componentDraws[x]
+
+	#total power draw is in units of joules!!
 	return total, componentDraws
 
 def GenCsv():
@@ -94,7 +96,7 @@ def GenCsv():
 
 		#opening the csv and adding the headers
 		g = open("engineOutput.csv", "w+")
-		g.write("Time,Submode,Power Generated (W),Power Consumed (W),Battery Level(W),,MAIADCS consumption,ClydeOBC consumption,ClydeSBandAntenna,"+
+		g.write("Time,Submode,Power Generated (Joule),Power Consumed (Joule),Battery Level(Wh),,MAIADCS consumption,ClydeOBC consumption,ClydeSBandAntenna,"+
 			"ClydeSunSensors,FsatiUHFTransiever,GomSpaceBP4,IDS,ISISUHFAntenna,P60PDU,P60AC,SolarPanels,Tx2i\n")
 
 		while nextLineTime != '':
@@ -102,9 +104,10 @@ def GenCsv():
 			#plugs in the submode info to each component (line#Info[-1])
 			powConsumed, componentDraws = calculateComps(curLineMode, interval)
 
-			#converts the instatanious data to actual data, i.e. Watt/hrs to Watts
-			actualPowGain = convertItoA(curLinePowGain)
-			totalPower += (actualPowGain - powConsumed)
+			#converts Joules/sec to joules over the given interval
+			actualPowGain = curLinePowGain * getInterval()
+			#in units of joules 
+			totalPower += (actualPowGain - powConsumed)/3600
 
 			#incrementing the lines by 1
 			curLineTime, curLinePowGain, curLineSol, curLineMode = nextLineTime, nextLinePowGain, nextLineSol, nextLineMode

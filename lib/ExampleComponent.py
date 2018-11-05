@@ -15,8 +15,8 @@ def C2PState2(x):
 #calls the appropriate power state given the submode
 def getPower(mode, interval):
 	if mode == "Cruise - Idle":
-		return quad(C2PState1, 0, interval)[1]
+		return quad(C2PState1, 0, interval)[0]
 	elif mode == "Scan - Point Prep":
-		return quad(C2PState2, 0, interval)[1]
+		return quad(C2PState2, 0, interval)[0]
 	else:
 		return 0
