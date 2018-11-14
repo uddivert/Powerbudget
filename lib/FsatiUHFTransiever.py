@@ -12,6 +12,10 @@ def RXOnly(x):
 	y = .2213
 	return y
 
+def RXandTX(x):
+	y = (13*.2213 + 5.1295*2)/15 #this is jerry-rigs the on-off beaconing that is common
+	return y
+
 def TXHalfW(x):
 	y = 2.4795
 	return y
@@ -31,9 +35,9 @@ def TXandRX(x):
 #calls the appropriate power state given the submode
 def getPower(mode, interval):
 	if mode == "Safe Mode":
-		return quad(TX2W, 0, interval)[0]
+		return quad(RXandTX, 0, interval)[0]
 	elif mode == "Cruise - Idle":
-		return quad(TX2W, 0, interval)[0]
+		return quad(RXandTX, 0, interval)[0]
 	elif mode == "Scan - Point Prep":
 		return quad(TX2W, 0, interval)[0]
 	elif mode == "Scan - Target Point":
