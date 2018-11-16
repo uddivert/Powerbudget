@@ -32,5 +32,5 @@ Running the engine:
 file has accurate functions for each of the satellites possible submodes. This 
 is subject to change since the submodes and components haven't been nailed down yet.
 2) name your timeline powertestdata.csv
-3) run $ python3 engine.py
+3) run $ python engine.py
 4) check for output
