@@ -8,8 +8,12 @@ def Off(x):
 	y = 0
 	return y
 
-def Idle(x):
-	y = .3533
+def IdleMax(x):	#70 miliamps
+	y = .35
+	return y
+
+def IdleMin(x):	#170 miliamps
+	y = .85
 	return y
 
 def NormalActivation(x):
@@ -25,7 +29,7 @@ def getPower(mode, interval):
 	if mode == "Safe Mode":
 		return quad(Idle, 0, interval)[0]
 	elif mode == "Cruise - Idle":
-		return quad(Idle, 0, interval)[0]
+		return quad(IdleMax, 0, interval)[0]
 	elif mode == "Scan - Point Prep":
 		return quad(NormalActivation, 0, interval)[0]
 	elif mode == "Scan - Target Point":

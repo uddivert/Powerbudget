@@ -99,6 +99,12 @@ def GenCsv():
 		g.write("Time,Submode,Power Generated (Joule),Power Consumed (Joule),Battery Level(Wh),,MAIADCS consumption,ClydeOBC consumption,ClydeSBandAntenna,"+
 			"ClydeSunSensors,FsatiUHFTransiever,GomSpaceBP4,IDS,ISISUHFAntenna,P60PDU,P60AC,SolarPanels,Tx2i\n")
 
+		lineCount = 0 				#counts the number of lines of data the will be processed
+		totalPowerSum = totalPower	#holds the sum of the Battery Power for calculating the mean
+		maxBat = 0
+		minBat = 38
+		minOccured = ""
+		maxOccured = ""
 		while nextLineTime != '':
 
 			#plugs in the submode info to each component (line#Info[-1])
@@ -124,14 +130,36 @@ def GenCsv():
 				g.write("," + str(componentDraws[x]))
 			g.write("\n")
 
-			#if the power drops dangerously low, did not stop program altogether because I figure more info is always better
-			if totalPower < 5:
-				print("Power below 5W at " + str(curLineTime))
+			#calculating the stats
+			lineCount += 1
+			totalPowerSum += totalPower 	#Watthours
+			if totalPower > maxBat:
+				maxBat = totalPower
+				maxOccured = str(curLineTime)
+			if totalPower < minBat:
+				minBat = totalPower
+				minOccured = str(curLineTime)
+			
+
+			#if the power drops below 0, stops program altogether
+			if totalPower <= 0:
+				print("The battery ran out of power at time " + str(curLineTime) + " after " + str(lineCount * getInterval) + " seconds")
 				valid = False
+				break
+			
 
 		#if the battery power never dropped too low
 		if valid == True:
 			print("This timeline has passed!")
+		else:
+			print("This timeline has failed!")
+		print("Analysis: \nBattery mean power = " + str(totalPowerSum/lineCount) + " Watt hours")
+		print("Battery minimum = " + str(minBat) + " Watthours occured at " + minOccured)
+		print("Battery maximum = " + str(maxBat) + " Watthours occured at " + maxOccured)
+
+		g.write("Analysis:\n")
+		g.write("Battery minimum :," + str(minBat) + " Watthours, occured at :," + minOccured + "\n")
+		g.write("Battery maximum :," + str(maxBat) + " Watthours, occured at :," + maxOccured + "\n")
 		g.close()
 
 if __name__ == "__main__":
