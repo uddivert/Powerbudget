@@ -27,7 +27,7 @@ def MaxPow(x):
 #calls the appropriate power state given the submode
 def getPower(mode, interval):
 	if mode == "Safe Mode":
-		return quad(Idle, 0, interval)[0]
+		return quad(IdleMin, 0, interval)[0]
 	elif mode == "Cruise - Idle":
 		return quad(IdleMax, 0, interval)[0]
 	elif mode == "Scan - Point Prep":
@@ -39,11 +39,11 @@ def getPower(mode, interval):
 	elif mode == "Scan - Nadir Point":
 		return quad(NormalActivation, 0, interval)[0]
 	elif mode == "Deployment - Boot":
-		return quad(Idle, 0, interval)[0]
+		return quad(IdleMin, 0, interval)[0]
 	elif mode == "Deployment - Connect Prep":
 		return quad(NormalActivation, 0, interval)[0]
 	elif mode == "Cruise - Radiation Idle":
-		return quad(Idle, 0, interval)[0]
+		return quad(IdleMin, 0, interval)[0]
 	elif mode == "Cruise - Power Generation":
 		return quad(NormalActivation, 0, interval)[0]
 	elif mode == "Cruise - Heat Protection Idle":
@@ -53,16 +53,16 @@ def getPower(mode, interval):
 	elif mode == "Data Processing - SfM":
 		return quad(NormalActivation, 0, interval)[0]
 	elif mode == "Data Processing - Neural Net":
-		return quad(Idle, 0, interval)[0]
+		return quad(IdleMin, 0, interval)[0]
 	elif mode == "Data Processing - Blob Detect":
-		return quad(Idle, 0, interval)[0]
+		return quad(IdleMin, 0, interval)[0]
 	elif mode == "Data Processing - Compute Exit":
-		return quad(Idle, 0, interval)[0]
+		return quad(IdleMin, 0, interval)[0]
 	elif mode == "Data Downlink - Data Prep":
-		return quad(Idle, 0, interval)[0]
+		return quad(IdleMin, 0, interval)[0]
 	elif mode == "Data Downlink - Data Transmit":
-		return quad(Idle, 0, interval)[0]
+		return quad(IdleMin, 0, interval)[0]
 	elif mode == "Data Downlink - Transmit Exit": 
-		return quad(Idle, 0, interval)[0]
+		return quad(IdleMin, 0, interval)[0]
 	else:
 		return 0

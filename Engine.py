@@ -86,7 +86,7 @@ def GenCsv():
 	valid = True
 
 	#opens the timeline csv and scrapes the info from each line, processes, and writes to output.csv
-	with open("./Inputs/powertestdata.csv") as f:
+	with open("./Inputs/newTimeline.csv") as f:
 		curLine, nextLine, f = cleanHeader(f)
 		interval = getInterval()
 		
