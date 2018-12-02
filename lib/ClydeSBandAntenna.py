@@ -69,4 +69,5 @@ def getPower(mode, interval):
 	elif mode == "Data Downlink - Transmit Exit": 
 		return quad(Off, 0, interval)[0]
 	else:
-		return 0
+		print("There is an invalid submode written in the timeline. Please check the csv formatting.")
+		return -1

@@ -60,11 +60,17 @@ def convertItoA(arg):
 '''this function is essentail, it plugs in the interval and submode into each of the component files
 and compiles them into an array and also sums them for a total power consumption. It is intentionally
 verbose so it is easy to see if all the components are being called and returning info''' 
-def calculateComps(curLineMode, interval):
+def calculateComps(curLineMode, interval, curLineTime):
 	total = 0
 	componentDraws = []
 	componentDraws.append(MAIADCS.getPower(curLineMode, interval))
 	componentDraws.append(ClydeOBC.getPower(curLineMode, interval))	
+
+	litmusDraw = ClydeSBandAntenna.getPower(curLineMode, interval)
+	if litmusDraw < 0:
+		print("Error occurred at time " + curLineTime)
+		exit()
+
 	componentDraws.append(ClydeSBandAntenna.getPower(curLineMode, interval))
 	componentDraws.append(ClydeSunSensors.getPower(curLineMode, interval))
 	componentDraws.append(FsatiUHFTransiever.getPower(curLineMode, interval))
@@ -81,7 +87,7 @@ def calculateComps(curLineMode, interval):
 	#total power draw is in units of joules!!
 	return total, componentDraws
 
-def GenCsv():
+def GenCsv(powerCoeff, outfile):
 	totalPower = 38
 	valid = True
 
@@ -95,7 +101,7 @@ def GenCsv():
 		nextLineTime, nextLinePowGain, nextLineSol, nextLineMode = scrapeInfo(nextLine)
 
 		#opening the csv and adding the headers
-		g = open("engineOutput.csv", "w+")
+		g = open(outfile, "w+")
 		g.write("Time,Submode,Power Generated (Joule),Power Consumed (Joule),Battery Level(Wh),,MAIADCS consumption,ClydeOBC consumption,ClydeSBandAntenna,"+
 			"ClydeSunSensors,FsatiUHFTransiever,GomSpaceBP4,IDS,ISISUHFAntenna,P60PDU,P60AC,SolarPanels,Tx2i\n")
 
@@ -108,10 +114,11 @@ def GenCsv():
 		while nextLineTime != '':
 
 			#plugs in the submode info to each component (line#Info[-1])
-			powConsumed, componentDraws = calculateComps(curLineMode, interval)
+			powConsumed, componentDraws = calculateComps(curLineMode, interval, curLineTime)
 
 			#converts Joules/sec to joules over the given interval
-			actualPowGain = curLinePowGain * getInterval()
+			actualPowGain = powerCoeff * (curLinePowGain * getInterval())
+			
 			#in units of joules 
 			totalPower += (actualPowGain - powConsumed)/3600
 
@@ -132,7 +139,7 @@ def GenCsv():
 
 			#calculating the stats
 			lineCount += 1
-			totalPowerSum += totalPower 	#Watthours
+			totalPowerSum += totalPower 	#Watt-hours
 			if totalPower > maxBat:
 				maxBat = totalPower
 				maxOccured = str(curLineTime)
@@ -154,16 +161,27 @@ def GenCsv():
 		else:
 			print("This timeline has failed!")
 		print("Analysis: \nBattery mean power = " + str(totalPowerSum/lineCount) + " Watt hours")
-		print("Battery minimum = " + str(minBat) + " Watthours occured at " + minOccured)
-		print("Battery maximum = " + str(maxBat) + " Watthours occured at " + maxOccured)
+		print("Battery minimum = " + str(minBat) + " Watt-hours occurred at " + minOccured)
+		print("Battery maximum = " + str(maxBat) + " Watt-hours occurred at " + maxOccured)
 
 		g.write("Analysis:\n")
-		g.write("Battery minimum :," + str(minBat) + " Watthours, occured at :," + minOccured + "\n")
-		g.write("Battery maximum :," + str(maxBat) + " Watthours, occured at :," + maxOccured + "\n")
+		g.write("Battery minimum :," + str(minBat) + " Watt-hours, occurred at :," + minOccured + "\n")
+		g.write("Battery maximum :," + str(maxBat) + " Watt-hours, occurred at :," + maxOccured + "\n")
 		g.close()
 
 if __name__ == "__main__":
-	GenCsv()
+	while(True):
+		try:
+			userIn = input("Please enter the power coefficient (0,1] you would like to use. The default is 1")
+			powerCoeff = float(userIn)
+			if powerCoeff <= 1 and powerCoeff > 0:
+				break
+			else:
+				print("Sorry that is not a valid 0-1 value.")
+		except:
+			print("Sorry that is not a valid 0-1 value.")
+	outfile = str(userIn) + "engineOutput.csv"
+	GenCsv(powerCoeff, outfile)
 
 
 
