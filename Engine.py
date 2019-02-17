@@ -1,4 +1,5 @@
 from itertools import *
+import sys
 from lib import MAIADCS
 from lib import ClydeOBC
 from lib import ClydeSBandAntenna
@@ -64,7 +65,7 @@ def calculateComps(curLineMode, interval, curLineTime):
 	total = 0
 	componentDraws = []
 	componentDraws.append(MAIADCS.getPower(curLineMode, interval))
-	componentDraws.append(ClydeOBC.getPower(curLineMode, interval))	
+	componentDraws.append(ClydeOBC.getPower(curLineMode, interval))
 
 	litmusDraw = ClydeSBandAntenna.getPower(curLineMode, interval)
 	if litmusDraw < 0:
