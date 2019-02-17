@@ -127,18 +127,48 @@ if __name__ == "__main__":
 	#print(line)
 	if line == '':
 		f.close()
-		exit(1)
-	while(line[0] == ''):
-		line, f, comp = createComponent(f)
-		components.append(comp)
+	try:
+		while(line[0] == ''):
+			line, f, comp = createComponent(f)
+			components.append(comp)
+
+			if line == '':
+				f.close()
+	except:
+		print("done processing the csv")
+
+
+	'''The config file should have been parsed through completely now and populate the components list
+	The below code deals with formatting and writing that code into new files'''
+	for x in components:
+		print("in comps\n")
+		outfile = "./" + x.name + ".py"
+		print(outfile + " is the outfile\n")
+		g = open(outfile, "w+")
+		print("opened the outfile\n")
+		g.write("import numpy as np\nfrom scipy.integrate import quad\nfrom numpy import trapz\nfrom math import *\n\n#defines the mathematical functions associated with each power state\n")
 		
-		if line == '':
-			f.close()
-			exit(1)
+		#initial block
+		for y in x.states:
+			g.write("def " + y.name + "(x):\n")
+			g.write("\ty = " + str(y.consumption[0]) + "\n")
+			g.write("\treturn y\n\n")
+
+		g.write("#calls the appropriate power state given the submode\ndef getPower(mode, interval):\n")
+		first = True
+		for y in x.states:
+			for z in y.stateSubmodes:
+				if first:
+					g.write("\tif mode == " + z + ":\n")
+					first = False
+				else:
+					g.write("\telif mode == " + z + ":\n")
+				g.write("\t\treturn quad(" + z + ", 0, interval)[0]\n")
+		g.write("\telse:\n")
+		g.write("\t\treturn 0")
 
 
-	g = open("testComp.csv", "w+")
-	g.close()
+		g.close()
 
 
 

@@ -181,7 +181,7 @@ if __name__ == "__main__":
 				print("Sorry that is not a valid 0-1 value.")
 		except:
 			print("Sorry that is not a valid 0-1 value.")
-	outfile = str(userIn) + "engineOutput.csv"
+	outfile = "./outputs/" str(userIn) + "engineOutput.csv"
 	GenCsv(powerCoeff, outfile)
 
 
