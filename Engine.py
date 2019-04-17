@@ -6,7 +6,8 @@ from lib import ClydeSBandAntenna
 from lib import ClydeSunSensors
 from lib import FsatiUHFTransiever
 from lib import GomSpaceBP4
-from lib import IDS
+from lib import ImperxC4180
+from lib import BlackflyColorCam
 from lib import ISISUHFAntenna
 from lib import P60PDU
 from lib import P60AC
@@ -76,7 +77,8 @@ def calculateComps(curLineMode, interval, curLineTime):
 	componentDraws.append(ClydeSunSensors.getPower(curLineMode, interval))
 	componentDraws.append(FsatiUHFTransiever.getPower(curLineMode, interval))
 	componentDraws.append(GomSpaceBP4.getPower(curLineMode, interval))
-	componentDraws.append(IDS.getPower(curLineMode, interval))
+	componentDraws.append(ImperxC4180.getPower(curLineMode, interval))
+	componentDraws.append(BlackflyColorCam.getPower(curLineMode, interval))
 	componentDraws.append(ISISUHFAntenna.getPower(curLineMode, interval))
 	componentDraws.append(P60PDU.getPower(curLineMode, interval))
 	componentDraws.append(P60AC.getPower(curLineMode, interval))
@@ -104,7 +106,7 @@ def GenCsv(powerCoeff, outfile):
 		#opening the csv and adding the headers
 		g = open(outfile, "w+")
 		g.write("Time,Submode,Power Generated (Joule),Power Consumed (Joule),Battery Level(Wh),,MAIADCS consumption,ClydeOBC consumption,ClydeSBandAntenna,"+
-			"ClydeSunSensors,FsatiUHFTransiever,GomSpaceBP4,IDS,ISISUHFAntenna,P60PDU,P60AC,SolarPanels,Tx2i\n")
+			"ClydeSunSensors,FsatiUHFTransiever,GomSpaceBP4,ImperxC4180,BlackflyColorCam,ISISUHFAntenna,P60PDU,P60AC,SolarPanels,Tx2i\n")
 
 		lineCount = 0 				#counts the number of lines of data the will be processed
 		totalPowerSum = totalPower	#holds the sum of the Battery Power for calculating the mean
@@ -117,10 +119,13 @@ def GenCsv(powerCoeff, outfile):
 			#plugs in the submode info to each component (line#Info[-1])
 			powConsumed, componentDraws = calculateComps(curLineMode, interval, curLineTime)
 
+			#this is a jerry rigged way to get the heater on the BP4 to turn on if in eclipse
+			if curLinePowGain <= 0:
+				powConsumed += (1.5	 * interval);
 			#converts Joules/sec to joules over the given interval
 			actualPowGain = powerCoeff * (curLinePowGain * getInterval())
 			
-			#in units of joules 
+			#in units of joules
 			totalPower += (actualPowGain - powConsumed)/3600
 
 			#incrementing the lines by 1
@@ -151,7 +156,7 @@ def GenCsv(powerCoeff, outfile):
 
 			#if the power drops below 0, stops program altogether
 			if totalPower <= 0:
-				print("The battery ran out of power at time " + str(curLineTime) + " after " + str(lineCount * getInterval) + " seconds")
+				print("\n----------------------------------------------------\nThe battery ran out of power at time " + str(curLineTime) + " after " + str(lineCount * interval)+ " seconds")
 				valid = False
 				break
 			
@@ -165,7 +170,7 @@ def GenCsv(powerCoeff, outfile):
 		print("Battery minimum = " + str(minBat) + " Watt-hours occurred at " + minOccured)
 		print("Battery maximum = " + str(maxBat) + " Watt-hours occurred at " + maxOccured)
 
-		g.write("Analysis:\n")
+		g.write("Analysis: \nBattery mean power = " + str(totalPowerSum/lineCount) + " Watt hours")
 		g.write("Battery minimum :," + str(minBat) + " Watt-hours, occurred at :," + minOccured + "\n")
 		g.write("Battery maximum :," + str(maxBat) + " Watt-hours, occurred at :," + maxOccured + "\n")
 		g.close()
@@ -181,28 +186,5 @@ if __name__ == "__main__":
 				print("Sorry that is not a valid 0-1 value.")
 		except:
 			print("Sorry that is not a valid 0-1 value.")
-	outfile = "./outputs/" str(userIn) + "engineOutput.csv"
+	outfile = "./outputs/" + str(userIn) + "engineOutput.csv"
 	GenCsv(powerCoeff, outfile)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

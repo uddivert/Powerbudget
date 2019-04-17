@@ -5,29 +5,29 @@ from math import *
 
 #defines the mathematical functions associated with each power state
 def Off(x):
-	y = 0
+	y = 0.0
 	return y
 
-def Enable(x):
-	y = 1.2208
+def Idle(x):
+	y = 0.61
 	return y
 
-def PA27W(x):
-	y = 5.4003
+def TXTwoW(x):
+	y = 2.7
 	return y
 
-def PA31W(x):
-	y = 6.2006
+def TXThreeW(x):
+	y = 3.1
 	return y
 
-def PA37W(x):
-	y = 7.4007
+def TXFourW(x):
+	y = 3.7
 	return y
 
-def PA46W(x):
-	y = 10.7008
+def TXFiveW(x):
+	y = 4.6
 	return y
-	
+
 #calls the appropriate power state given the submode
 def getPower(mode, interval):
 	if mode == "Safe Mode":
@@ -42,12 +42,10 @@ def getPower(mode, interval):
 		return quad(Off, 0, interval)[0]
 	elif mode == "Scan - Nadir Point":
 		return quad(Off, 0, interval)[0]
-	elif mode == "Deployment - Boot":
-		return quad(Idle, 0, interval)[0]
 	elif mode == "Deployment - Connect Prep":
 		return quad(Off, 0, interval)[0]
 	elif mode == "Cruise - Radiation Idle":
-		return quad(Idle, 0, interval)[0]
+		return quad(Off, 0, interval)[0]
 	elif mode == "Cruise - Power Generation":
 		return quad(Off, 0, interval)[0]
 	elif mode == "Cruise - Heat Protection Idle":
@@ -58,16 +56,19 @@ def getPower(mode, interval):
 		return quad(Off, 0, interval)[0]
 	elif mode == "Data Processing - Neural Net":
 		return quad(Off, 0, interval)[0]
+	elif mode == "Data Processing - Neural Net":
+		return quad(Off, 0, interval)[0]
 	elif mode == "Data Processing - Blob Detect":
 		return quad(Off, 0, interval)[0]
 	elif mode == "Data Processing - Compute Exit":
 		return quad(Off, 0, interval)[0]
 	elif mode == "Data Downlink - Data Prep":
 		return quad(Off, 0, interval)[0]
-	elif mode == "Data Downlink - Data Transmit":
-		return quad(PA46W, 0, interval)[0]
-	elif mode == "Data Downlink - Transmit Exit": 
+	elif mode == "Data Downlink - Transmit Exit":
 		return quad(Off, 0, interval)[0]
+	elif mode == "Deployment - Boot":
+		return quad(Idle, 0, interval)[0]
+	elif mode == "Data Downlink - Data Transmit":
+		return quad(TXFiveW, 0, interval)[0]
 	else:
-		print("There is an invalid submode written in the timeline. Please check the csv formatting.")
-		return -1
+		return 0

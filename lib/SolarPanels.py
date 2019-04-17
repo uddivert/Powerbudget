@@ -5,21 +5,20 @@ from math import *
 
 #defines the mathematical functions associated with each power state
 def Off(x):
-	y = 0
+	y = 0.0
 	return y
 
 def TempSense(x):
-	y = .1
+	y = 0.066
 	return y
 
 def CoarseSunSense(x):
-	y = .027
+	y = 0.027
 	return y
 
 def TempAndSunSense(x):
-	y = .127
+	y = 0.093
 	return y
-
 
 #calls the appropriate power state given the submode
 def getPower(mode, interval):
@@ -51,6 +50,8 @@ def getPower(mode, interval):
 		return quad(TempAndSunSense, 0, interval)[0]
 	elif mode == "Data Processing - Neural Net":
 		return quad(TempAndSunSense, 0, interval)[0]
+	elif mode == "Data Processing - Neural Net":
+		return quad(TempAndSunSense, 0, interval)[0]
 	elif mode == "Data Processing - Blob Detect":
 		return quad(TempAndSunSense, 0, interval)[0]
 	elif mode == "Data Processing - Compute Exit":
@@ -59,7 +60,7 @@ def getPower(mode, interval):
 		return quad(TempAndSunSense, 0, interval)[0]
 	elif mode == "Data Downlink - Data Transmit":
 		return quad(TempAndSunSense, 0, interval)[0]
-	elif mode == "Data Downlink - Transmit Exit": 
+	elif mode == "Data Downlink - Transmit Exit":
 		return quad(TempAndSunSense, 0, interval)[0]
 	else:
 		return 0

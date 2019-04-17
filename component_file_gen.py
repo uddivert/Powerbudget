@@ -142,7 +142,7 @@ if __name__ == "__main__":
 	The below code deals with formatting and writing that code into new files'''
 	for x in components:
 		print("in comps\n")
-		outfile = "./" + x.name + ".py"
+		outfile = "./lib/" + x.name + ".py"
 		print(outfile + " is the outfile\n")
 		g = open(outfile, "w+")
 		print("opened the outfile\n")
@@ -159,11 +159,11 @@ if __name__ == "__main__":
 		for y in x.states:
 			for z in y.stateSubmodes:
 				if first:
-					g.write("\tif mode == " + z + ":\n")
+					g.write("\tif mode == \"" + z + "\":\n")
 					first = False
 				else:
-					g.write("\telif mode == " + z + ":\n")
-				g.write("\t\treturn quad(" + z + ", 0, interval)[0]\n")
+					g.write("\telif mode == \"" + z + "\":\n")
+				g.write("\t\treturn quad(" + y.name + ", 0, interval)[0]\n")
 		g.write("\telse:\n")
 		g.write("\t\treturn 0")
 
