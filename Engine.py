@@ -1,6 +1,6 @@
 from itertools import *
 import sys
-from lib import MAIADCS
+from lib import CubeSpaceADCS
 from lib import ClydeOBC
 from lib import ClydeSBandAntenna
 from lib import ClydeSunSensors
@@ -64,7 +64,7 @@ verbose so it is easy to see if all the components are being called and returnin
 def calculateComps(curLineMode, interval, curLineTime):
 	total = 0
 	componentDraws = []
-	componentDraws.append(MAIADCS.getPower(curLineMode, interval))
+	componentDraws.append(CubeSpaceADCS.getPower(curLineMode, interval))
 	componentDraws.append(ClydeOBC.getPower(curLineMode, interval))
 
 	litmusDraw = ClydeSBandAntenna.getPower(curLineMode, interval)
