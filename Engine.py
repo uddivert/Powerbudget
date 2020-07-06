@@ -93,7 +93,7 @@ def GenCsv(powerCoeff, outfile):
 	valid = True
 
 	#opens the timeline csv and scrapes the info from each line, processes, and writes to output.csv
-	with open("./Inputs/newTimeline.csv") as f:
+	with open("./Inputs/updatedTimeline.csv") as f:
 		curLine, nextLine, f = cleanHeader(f)
 		interval = getInterval()
 		
@@ -121,8 +121,8 @@ def GenCsv(powerCoeff, outfile):
 			if curLinePowGain <= 0:
 				powConsumed += (1.6	 * interval)
 			#Comment out below after a 6U simulation is made
-			else:
-				curLinePowGain *= 1.25
+			# else:
+			# 	curLinePowGain *= 1.25
 			#converts Joules/sec to joules over the given interval
 			actualPowGain = powerCoeff * (curLinePowGain * getInterval())
 			
