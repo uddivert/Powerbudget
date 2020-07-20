@@ -15,7 +15,7 @@ from lib import CSLBAT
 #I know this looks ridiculous but the * would not work
 
 test = True
-interval = 30
+interval = 60
 
 def getInterval():
 	'''defunct-----------------
@@ -93,7 +93,7 @@ def GenCsv(powerCoeff, outfile):
 	valid = True
 
 	#opens the timeline csv and scrapes the info from each line, processes, and writes to output.csv
-	with open("./Inputs/updatedTimeline.csv") as f:
+	with open("Inputs/updatedTimeline.csv") as f:
 		curLine, nextLine, f = cleanHeader(f)
 		interval = getInterval()
 		
@@ -108,6 +108,7 @@ def GenCsv(powerCoeff, outfile):
 
 		lineCount = 0 				#counts the number of lines of data the will be processed
 		totalPowerSum = totalPower	#holds the sum of the Battery Power for calculating the mean
+		powerUseage = []
 		maxBat = 0
 		minBat = 81
 		minOccured = ""
@@ -128,6 +129,7 @@ def GenCsv(powerCoeff, outfile):
 			
 			#in units of joules
 			totalPower += (actualPowGain - powConsumed)/3600
+			powerUseage.append(powConsumed/interval)
 
 			#incrementing the lines by 1
 			curLineTime, curLinePowGain, curLineSol, curLineMode = nextLineTime, nextLinePowGain, nextLineSol, nextLineMode
@@ -170,6 +172,9 @@ def GenCsv(powerCoeff, outfile):
 		print("Analysis: \nBattery mean power = " + str(totalPowerSum/lineCount) + " Watt hours")
 		print("Battery minimum = " + str(minBat) + " Watt-hours occurred at " + minOccured)
 		print("Battery maximum = " + str(maxBat) + " Watt-hours occurred at " + maxOccured)
+		print("Minimum power consummed = " + str(min(powerUseage)) + " Watts")
+		print("Maximum power consummed = " + str(max(powerUseage)) + " Watts")
+		print("Average power consummed = " + str(sum(powerUseage)/len(powerUseage)) + " Watts")
 
 		g.write("Analysis: \nBattery mean power = " + str(totalPowerSum/lineCount) + " Watt hours")
 		g.write("Battery minimum :," + str(minBat) + " Watt-hours, occurred at :," + minOccured + "\n")

@@ -12,7 +12,7 @@ def scrapeInfo(line):
 	return lineInfo[1] + "," + lineInfo[2]
 
 g = open("newTimeline.csv", "w+")
-with open("./powertestdata.csv") as f:
+with open("powertestdata.csv") as f:
 	for x in range(2303):
 		g.write(f.readline())
 	
