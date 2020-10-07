@@ -15,7 +15,7 @@ from lib import CSLBAT
 #I know this looks ridiculous but the * would not work
 
 test = True
-interval = 60
+interval = 30
 
 def getInterval():
 	'''defunct-----------------
@@ -109,6 +109,7 @@ def GenCsv(powerCoeff, outfile):
 		lineCount = 0 				#counts the number of lines of data the will be processed
 		totalPowerSum = totalPower	#holds the sum of the Battery Power for calculating the mean
 		powerUseage = []
+		solarGen = []
 		maxBat = 0
 		minBat = 81
 		minOccured = ""
@@ -126,6 +127,7 @@ def GenCsv(powerCoeff, outfile):
 			# 	curLinePowGain *= 1.25
 			#converts Joules/sec to joules over the given interval
 			actualPowGain = powerCoeff * (curLinePowGain * getInterval())
+			solarGen.append(actualPowGain/getInterval())
 			
 			#in units of joules
 			totalPower += (actualPowGain - powConsumed)/3600
@@ -172,9 +174,12 @@ def GenCsv(powerCoeff, outfile):
 		print("Analysis: \nBattery mean power = " + str(totalPowerSum/lineCount) + " Watt hours")
 		print("Battery minimum = " + str(minBat) + " Watt-hours occurred at " + minOccured)
 		print("Battery maximum = " + str(maxBat) + " Watt-hours occurred at " + maxOccured)
-		print("Minimum power consummed = " + str(min(powerUseage)) + " Watts")
-		print("Maximum power consummed = " + str(max(powerUseage)) + " Watts")
-		print("Average power consummed = " + str(sum(powerUseage)/len(powerUseage)) + " Watts")
+		print("Minimum power consumed = " + str(min(powerUseage)) + " Watts")
+		print("Maximum power consumed = " + str(max(powerUseage)) + " Watts")
+		print("Average power consumed = " + str(sum(powerUseage)/len(powerUseage)) + " Watts")
+		print("Minimum power generated = " + str(min(solarGen)) + " Watts")
+		print("Maximum power generated = " + str(max(solarGen)) + " Watts")
+		print("Average power generated = " + str(sum(solarGen)/len(solarGen)) + " Watts")
 
 		g.write("Analysis: \nBattery mean power = " + str(totalPowerSum/lineCount) + " Watt hours")
 		g.write("Battery minimum :," + str(minBat) + " Watt-hours, occurred at :," + minOccured + "\n")
