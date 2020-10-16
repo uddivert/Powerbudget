@@ -34,8 +34,6 @@ def getPower(mode, interval):
 		return quad(Off, 0, interval)[0]
 	elif mode == "Data Processing - Neural Net":
 		return quad(Off, 0, interval)[0]
-	elif mode == "Data Processing - Neural Net":
-		return quad(Off, 0, interval)[0]
 	elif mode == "Data Processing - Blob Detect":
 		return quad(Off, 0, interval)[0]
 	elif mode == "Data Processing - Compute Exit":

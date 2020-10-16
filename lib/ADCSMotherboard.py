@@ -27,7 +27,7 @@ def getPower(mode, interval):
 	elif mode == "Scan - Nadir Point":
 		return quad(Nominal, 0, interval)[0]
 	elif mode == "Deployment - Boot":
-		return quad(Nominal, 0, interval)[0]
+		return quad(Off, 0, interval)[0]
 	elif mode == "Deployment - Connect Prep":
 		return quad(Nominal, 0, interval)[0]
 	elif mode == "Cruise - Radiation Idle":
@@ -39,8 +39,6 @@ def getPower(mode, interval):
 	elif mode == "Data Processing - Compute Prep":
 		return quad(Nominal, 0, interval)[0]
 	elif mode == "Data Processing - SfM":
-		return quad(Nominal, 0, interval)[0]
-	elif mode == "Data Processing - Neural Net":
 		return quad(Nominal, 0, interval)[0]
 	elif mode == "Data Processing - Neural Net":
 		return quad(Nominal, 0, interval)[0]

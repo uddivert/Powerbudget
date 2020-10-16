@@ -114,6 +114,7 @@ def GenCsv(powerCoeff, outfile):
 		minBat = 81
 		minOccured = ""
 		maxOccured = ""
+		submodeStats = {}
 		while nextLineTime != '':
 
 			#plugs in the submode info to each component (line#Info[-1])
@@ -132,6 +133,8 @@ def GenCsv(powerCoeff, outfile):
 			#in units of joules
 			totalPower += (actualPowGain - powConsumed)/3600
 			powerUseage.append(powConsumed/interval)
+
+			submodeStats[curLineMode] = powConsumed/interval
 
 			#incrementing the lines by 1
 			curLineTime, curLinePowGain, curLineSol, curLineMode = nextLineTime, nextLinePowGain, nextLineSol, nextLineMode
@@ -180,6 +183,10 @@ def GenCsv(powerCoeff, outfile):
 		print("Minimum power generated = " + str(min(solarGen)) + " Watts")
 		print("Maximum power generated = " + str(max(solarGen)) + " Watts")
 		print("Average power generated = " + str(sum(solarGen)/len(solarGen)) + " Watts")
+		print(" ")
+		print("Submode Stats")
+		for key in submodeStats:
+			print(key + " power consumed: " + str(submodeStats[key]) + " Watts")
 
 		g.write("Analysis: \nBattery mean power = " + str(totalPowerSum/lineCount) + " Watt hours")
 		g.write("Battery minimum :," + str(minBat) + " Watt-hours, occurred at :," + minOccured + "\n")

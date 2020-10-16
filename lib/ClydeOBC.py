@@ -27,13 +27,13 @@ def getPower(mode, interval):
 	elif mode == "Cruise - Idle":
 		return quad(Quiscent, 0, interval)[0]
 	elif mode == "Scan - Point Prep":
-		return quad(Quiscent, 0, interval)[0]
+		return quad(Intensive, 0, interval)[0]
 	elif mode == "Scan - Target Point":
-		return quad(Quiscent, 0, interval)[0]
+		return quad(Intensive, 0, interval)[0]
 	elif mode == "Scan - Point Exit":
-		return quad(Quiscent, 0, interval)[0]
+		return quad(Intensive, 0, interval)[0]
 	elif mode == "Scan - Nadir Point":
-		return quad(Quiscent, 0, interval)[0]
+		return quad(Intensive, 0, interval)[0]
 	elif mode == "Deployment - Boot":
 		return quad(Quiscent, 0, interval)[0]
 	elif mode == "Deployment - Connect Prep":
