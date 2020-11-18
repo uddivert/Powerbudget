@@ -2,7 +2,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 previousTimeline = pd.read_csv("newTimeline.csv")
-newTimeline = pd.read_csv("ISS_25544_30sec.csv")
+newTimeline = pd.read_csv("MOCI_5PanelPower.csv")
 
 firstTime = newTimeline['Time (UTCG)'][0]
 
