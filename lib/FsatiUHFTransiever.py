@@ -31,29 +31,29 @@ def Beacon(x):
 #calls the appropriate power state given the submode
 def getPower(mode, interval):
 	if mode == "Scan - Point Prep":
-		return quad(TX2W, 0, interval)[0]
+		return quad(Beacon, 0, interval)[0]
 	elif mode == "Scan - Target Point":
-		return quad(TX2W, 0, interval)[0]
+		return quad(Beacon, 0, interval)[0]
 	elif mode == "Scan - Point Exit":
-		return quad(TX2W, 0, interval)[0]
+		return quad(Beacon, 0, interval)[0]
 	elif mode == "Scan - Nadir Point":
-		return quad(TX2W, 0, interval)[0]
+		return quad(Beacon, 0, interval)[0]
 	elif mode == "Deployment - Boot":
-		return quad(TX2W, 0, interval)[0]
+		return quad(RX, 0, interval)[0]
 	elif mode == "Deployment - Connect Prep":
-		return quad(TX2W, 0, interval)[0]
+		return quad(Beacon, 0, interval)[0]
 	elif mode == "Data Processing - Compute Prep":
-		return quad(TX2W, 0, interval)[0]
+		return quad(Beacon, 0, interval)[0]
 	elif mode == "Data Processing - SfM":
-		return quad(TX2W, 0, interval)[0]
+		return quad(Beacon, 0, interval)[0]
 	elif mode == "Data Processing - Neural Net":
-		return quad(TX2W, 0, interval)[0]
+		return quad(Beacon, 0, interval)[0]
 	elif mode == "Data Processing - Neural Net":
-		return quad(TX2W, 0, interval)[0]
+		return quad(Beacon, 0, interval)[0]
 	elif mode == "Data Processing - Blob Detect":
-		return quad(TX2W, 0, interval)[0]
+		return quad(Beacon, 0, interval)[0]
 	elif mode == "Data Processing - Compute Exit":
-		return quad(TX2W, 0, interval)[0]
+		return quad(Beacon, 0, interval)[0]
 	elif mode == "Data Downlink - Data Prep":
 		return quad(TX2W, 0, interval)[0]
 	elif mode == "Data Downlink - Data Transmit":
