@@ -71,4 +71,4 @@ def getPower(mode, interval):
 	elif mode == "Cruise - Heat Protection Idle":
 		return quad(Beacon, 0, interval)[0]
 	else:
-		return 0
+		return 9999999999999999999999

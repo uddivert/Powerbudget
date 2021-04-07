@@ -53,4 +53,4 @@ def getPower(mode, interval):
 	elif mode == "Scan - Nadir Point":
 		return quad(Active, 0, interval)[0]
 	else:
-		return 0
+		return 9999999999999999999999

@@ -56,8 +56,6 @@ def getPower(mode, interval):
 		return quad(Off, 0, interval)[0]
 	elif mode == "Data Processing - Neural Net":
 		return quad(Off, 0, interval)[0]
-	elif mode == "Data Processing - Neural Net":
-		return quad(Off, 0, interval)[0]
 	elif mode == "Data Processing - Blob Detect":
 		return quad(Off, 0, interval)[0]
 	elif mode == "Data Processing - Compute Exit":
@@ -71,4 +69,4 @@ def getPower(mode, interval):
 	elif mode == "Data Downlink - Data Transmit":
 		return quad(TXFiveW, 0, interval)[0]
 	else:
-		return 0
+		return 9999999999999999999999

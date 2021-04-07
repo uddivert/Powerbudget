@@ -55,4 +55,4 @@ def getPower(mode, interval):
 	elif mode == "Data Downlink - Transmit Exit":
 		return quad(On, 0, interval)[0]
 	else:
-		return 0
+		return 9999999999999999999999
